@@ -2,7 +2,7 @@ import random
 import pandas as pd
 days_of_week = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']
 
-amount_of_information = 10000
+amount_of_information = 500000
 
 subjects = {
     1: {"name": "Русский язык", "difficulty": 3},
