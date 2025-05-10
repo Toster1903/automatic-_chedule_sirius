@@ -45,26 +45,68 @@ subjects = {
     38: {"name": "Проектно-исследовательская деятельность", "difficulty": 4}
 }
 
+
+
+
+def adjust_attendance(base_attendance, precipitation, difficulty, temperature, day):
+
+    if precipitation:
+        base_attendance -= random.randint(15, 25)
+
+
+    if difficulty >= 4:
+        base_attendance -= random.randint(5, 10)
+
+
+    if temperature > 30 or temperature < -5:
+        base_attendance -= random.randint(10, 15)
+
+
+    if day == 'Суббота':
+        base_attendance -= random.randint(5, 10)
+
+    return max(30, min(100, base_attendance))
+
+
+def adjust_performance(base_performance, attendance, difficulty):
+    performance = base_performance * (attendance / 100)
+    if difficulty >= 4:
+        performance -= random.randint(5, 15)
+    return max(20, min(100, int(performance)))
+
+
 data = []
 for i in range(amount_of_information):
     day = random.choice(days_of_week)
     group = random.randint(1, 16)
     subject = random.choice(list(subjects.values()))
-    name = subject['name']
-    difficulty = subject['difficulty']
+
+
+    base_attendance = random.randint(70, 90) if subject['difficulty'] < 4 else random.randint(50, 80)
+    base_performance = random.randint(60, 90) if subject['difficulty'] < 4 else random.randint(50, 75)
+
+
     temperature = random.randint(-5, 35)
-    precipitation = bool(random.randint(0, 1))
-    type_prec = random.choice(['солнечно', 'пасмурно', 'ветер', 'туман'])
-    num_classes = random.randint(1, 5)
+    if random.random() < 0.3:
+        precipitation = True
+        type_prec = random.choice(['дождь', 'снег', 'град'])
+    else:
+        precipitation = False
+        type_prec = random.choice(['солнечно', 'пасмурно', 'ветер', 'туман'])
+    num_classes = random.randint(1, 3) if day == 'Суббота' else random.randint(2, 5)
     class_numbers = sorted(random.sample(range(1, 9), num_classes))
-    performance = random.randint(50, 100)
-    attendance = random.randint(50, 100)
+    if num_classes == 1:  # Для единообразия вывода
+        class_numbers = [class_numbers[0]]
+
+
+    attendance = adjust_attendance(base_attendance, precipitation, subject['difficulty'], temperature, day)
+    performance = adjust_performance(base_performance, attendance, subject['difficulty'])
 
     record = {
         'день': day,
         'группа': group,
-        'предмет': name,
-        'сложность': difficulty,
+        'предмет': subject['name'],
+        'сложность': subject['difficulty'],
         'температура': temperature,
         'осадки': precipitation,
         'тип погоды': type_prec,
@@ -76,3 +118,5 @@ for i in range(amount_of_information):
     data.append(record)
 
 
+for entry in data[:3]:
+    print(entry)
