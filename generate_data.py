@@ -1,8 +1,8 @@
 import random
-
+import pandas as pd
 days_of_week = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']
 
-amount_of_information = 40
+amount_of_information = 500000
 
 subjects = {
     1: {"name": "Русский язык", "difficulty": 3},
@@ -94,7 +94,7 @@ for i in range(amount_of_information):
         precipitation = False
         type_prec = random.choice(['солнечно', 'пасмурно', 'ветер', 'туман'])
     num_classes = random.randint(1, 3) if day == 'Суббота' else random.randint(2, 5)
-    class_numbers = sorted(random.sample(range(1, 9), num_classes))
+    class_numbers = sorted(random.sample(range(1, 6), num_classes))
     if num_classes == 1:  # Для единообразия вывода
         class_numbers = [class_numbers[0]]
 
@@ -118,5 +118,11 @@ for i in range(amount_of_information):
     data.append(record)
 
 
-for entry in data[:3]:
-    print(entry)
+
+
+df = pd.DataFrame(data)
+
+print(df.head())
+
+df.to_csv('study_data.csv', index=False)
+
